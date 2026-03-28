@@ -1,0 +1,30 @@
+def topo_sort_dfs(n, edges):
+    graph = [[] for _ in range(n)]
+    for u, v in edges:
+        graph[u].append(v)
+
+    visited = [0] * n  # 0 = unvisited, 1 = visiting, 2 = visited
+    result = []
+
+    def dfs(node):
+        if visited[node] == 1:
+            return False  # cycle
+        if visited[node] == 2:
+            return True
+
+        visited[node] = 1
+
+        for neighbor in graph[node]:
+            if not dfs(neighbor):
+                return False
+
+        visited[node] = 2
+        result.append(node)
+        return True
+
+    for i in range(n):
+        if visited[i] == 0:
+            if not dfs(i):
+                return []  # cycle exists
+
+    return result[::-1]
