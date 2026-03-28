@@ -1,0 +1,53 @@
+from collections import deque
+
+def topo_sort_bfs(n, edges):
+    """
+    n      : number of nodes (0 to n-1)
+    edges  : list of (u, v) meaning u -> v
+    """
+
+    # Step 1: Build graph + indegree
+    graph = [[] for _ in range(n)]
+    indegree = [0] * n
+
+    for u, v in edges:
+        graph[u].append(v)
+        indegree[v] += 1
+
+    # Step 2: Push nodes with indegree 0
+    queue = deque()
+    for i in range(n):
+        if indegree[i] == 0:
+            queue.append(i)
+
+    topo_order = []
+
+    # Step 3: Process queue
+    while queue:
+        node = queue.popleft()
+        topo_order.append(node)
+
+        for neighbor in graph[node]:
+            indegree[neighbor] -= 1
+            if indegree[neighbor] == 0:
+                queue.append(neighbor)
+
+    # Step 4: Cycle check
+    if len(topo_order) != n:
+        return []  # cycle exists
+
+    return topo_order
+
+if __name__ == "__main__":
+
+    n = 6
+    edges = [
+        (5, 2),
+        (5, 0),
+        (4, 0),
+        (4, 1),
+        (2, 3),
+        (3, 1)
+    ]
+    
+    print(topo_sort_bfs(n, edges))
