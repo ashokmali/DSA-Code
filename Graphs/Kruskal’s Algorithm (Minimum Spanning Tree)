@@ -1,0 +1,48 @@
+class DSU:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+        px, py = self.find(x), self.find(y)
+
+        if px == py:
+            return False
+
+        if self.rank[px] < self.rank[py]:
+            self.parent[px] = py
+        elif self.rank[px] > self.rank[py]:
+            self.parent[py] = px
+        else:
+            self.parent[py] = px
+            self.rank[px] += 1
+
+        return True
+
+
+def kruskal(n, edges):
+    """
+    n      : number of nodes (0 to n-1)
+    edges  : list of (u, v, weight)
+    returns: total weight of MST
+    """
+
+    # Step 1: Sort edges by weight
+    edges.sort(key=lambda x: x[2])
+
+    dsu = DSU(n)
+    mst_weight = 0
+    mst_edges = []
+
+    # Step 2: Process edges
+    for u, v, w in edges:
+        if dsu.union(u, v):
+            mst_weight += w
+            mst_edges.append((u, v, w))
+
+    return mst_weight, mst_edges
