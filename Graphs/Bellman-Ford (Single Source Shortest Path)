@@ -1,0 +1,32 @@
+def bellman_ford(n, edges, source):
+    """
+    n      : number of nodes (0 to n-1)
+    edges  : list of (u, v, weight)
+    source : starting node
+
+    returns: (dist, has_negative_cycle)
+    """
+
+    INF = float('inf')
+    dist = [INF] * n
+    dist[source] = 0
+
+    # Step 1: Relax edges (n-1 times)
+    for _ in range(n - 1):
+        updated = False
+
+        for u, v, w in edges:
+            if dist[u] != INF and dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+                updated = True
+
+        # Optimization: stop early if no update
+        if not updated:
+            break
+
+    # Step 2: Detect negative cycle
+    for u, v, w in edges:
+        if dist[u] != INF and dist[u] + w < dist[v]:
+            return dist, True
+
+    return dist, False
